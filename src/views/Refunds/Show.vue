@@ -27,16 +27,6 @@ const getRefund = () => {
         }
     });
 };
-const isTotalValid = () => {
-    if (!formProducts.value.product_refund) return false;
-
-    // Calculamos el total sumando `precio_total` de cada producto
-    const calculatedTotal = formProducts.value.product_refund.reduce((total, product) => {
-        return total + (parseFloat(product.precio_total) || 0);
-    }, 0);
-
-    return calculatedTotal === parseFloat(formSale.value.total || 0);
-};
 
 </script>
 
@@ -161,13 +151,6 @@ const isTotalValid = () => {
                                 </tr>
                             </thead>
 
-                            <template v-if="!isTotalValid()">
-                                <tr>
-                                    <td colspan="8" class="px-1 py-1 text-center text-red-500">
-                                        Borraste un producto, pendejo. Pero la devolucion seguira existiendo
-                                    </td>
-                                </tr>
-                            </template>
                             <tbody class="bg-white">
                                 <tr v-for="(product, index) in formProducts.product_refund" :key="index">
                                     <td class="px-1 py-1 border-b border-gray-200">
