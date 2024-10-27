@@ -197,6 +197,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./views/Refunds/Index.vue'),
   },
   {
+    path: '/refunds/show/:id',
+    name: 'Refunds-Show',
+    component: () => import('./views/Refunds/Show.vue'),
+  },
+  {
     path: '/refunds/sales/:id',
     name: 'Refunds-Sales-Create',
     component: () => import('./views/Refunds/Create.vue'),

@@ -21,8 +21,8 @@ const getCellars = async (page) => {
 
 /* LISTAR PRODUCTOS */
 const buscarProducto = async () => {
-    const response = await axios.get(`/products?search=${search.value}`);
-    productosFiltrados.value = response.data.data;
+    const response = await axios.get(`/searchProduct?search=${search.value}`);
+    productosFiltrados.value = response.data;
 }
 
 const datalocal = ref([]);

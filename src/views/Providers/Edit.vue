@@ -239,7 +239,7 @@ onMounted(() => { getProviders() });
                             </div>
                             <select class="w-full bg-white rounded-r-md pl-2 text-base font-regular outline-0"
                                 :class="{ 'border-red-500 border-2': formErrors['responsable_iva'] }" id="responsable_iva"
-                                v-model="form.responsable_iva">
+                                v-model="form.responsable_iva" disabled>
                                 <option value="1">SI</option>
                                 <option value="0">NO</option>
                             </select>

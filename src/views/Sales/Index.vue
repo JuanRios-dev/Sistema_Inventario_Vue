@@ -151,20 +151,20 @@ onMounted(() => { loadData(1) });
                             <td class="px-6 py-2 border-b border-gray-200 whitespace-nowrap text-center">
                                 <div class="text-sm font-medium leading-5 text-gray-900">
                                     {{ Intl.NumberFormat('es-CO', {
-                style: 'currency', currency: 'COP'
-            }).format(sale.impuestos) }}
+                                        style: 'currency', currency: 'COP'
+                                    }).format(sale.impuestos) }}
                                 </div>
                                 <div class="text-sm leading-5 text-gray-900 whitespace-normal">
                                     {{ Intl.NumberFormat('es-CO', {
-                style: 'currency', currency: 'COP'
-            }).format(sale.subTotal) }}
+                                        style: 'currency', currency: 'COP'
+                                    }).format(sale.subTotal) }}
                                 </div>
                             </td>
                             <td class="px-6 py-2 border-b border-gray-200 whitespace-nowrap text-center">
                                 <div class="text-sm font-medium leading-5 text-gray-900">
                                     {{ Intl.NumberFormat('es-CO', {
-                style: 'currency', currency: 'COP'
-            }).format(sale.total) }}
+                                        style: 'currency', currency: 'COP'
+                                    }).format(sale.total) }}
                                 </div>
                             </td>
                             <td class="px-6 py-2 border-b border-gray-200 whitespace-nowrap text-center">

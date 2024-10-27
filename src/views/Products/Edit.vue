@@ -12,7 +12,6 @@ axios.defaults.headers.common['Authorization'] = 'Bearer ' + authStore.authToken
 const form = ref({
     codigo: '',
     descripcion: '',
-    tipo_producto: '',
     precio: '',
     iva_compra: '',
     iva_venta: '',
@@ -112,31 +111,6 @@ onMounted(() => { getProducts() });
                             <input type="text" class="w-full bg-white rounded-r-md pl-2 text-base font-regular outline-0"
                                 :class="{ 'border-red-500 border-2': formErrors['descripcion'] }" id="descripcion"
                                 v-model="form.descripcion" autocomplete="off">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="text-gray-700" for="tipo_producto">Tipo de Producto <span
-                                v-if="formErrors['tipo_producto']" class="text-red-500 mt-1 text-sm">*</span></label>
-                        <div class="flex mt-2">
-                            <div
-                                class="flex items-center justify-center rounded-tl-lg rounded-bl-lg border-y border-l relative border-gray-400 bg-white p-5">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                    class="bi bi-check2-square pointer-events-none absolute w-5 h-5 fill-gray-500 transition"
-                                    viewBox="0 0 16 16">
-                                    <path
-                                        d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5z" />
-                                    <path
-                                        d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0" />
-                                </svg>
-                            </div>
-                            <select class="w-full bg-white rounded-r-md pl-2 text-base font-regular outline-0"
-                                :class="{ 'border-red-500 border-2': formErrors['tipo_producto'] }" id="tipo_producto"
-                                v-model="form.tipo_producto">
-                                <option value="inventariable">Inventariable</option>
-                                <option value="no inventariable">No Inventariable</option>
-                                <option value="servicio">Servicio</option>
-                            </select>
                         </div>
                     </div>
 

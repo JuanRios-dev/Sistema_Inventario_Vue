@@ -97,8 +97,8 @@ const selectCustomer = (customer) => {
 
 /* LISTAR PRODUCTOS */
 const searchProducts = async () => {
-    const response = await axios.get(`/products?search=${searchProduct.value}`);
-    productsFiltrados.value = response.data.data;
+    const response = await axios.get(`/searchProduct?search=${searchProduct.value}`);
+    productsFiltrados.value = response.data;
 }
 
 const addProduct = async (product) => {
@@ -166,8 +166,8 @@ const calcularTotales = async () => {
 const calcularPrecioTotal = async (product) => {
     const index = form.value.products.indexOf(product);
     product.impuestos = ((product.cantidad * product.precio_unitario) * datalocal.value[index].product_iva) / 100;
-    product.valor_descuento = (((product.cantidad * product.precio_unitario) - product.impuestos) * product.descuento) / 100;
-    product.subtotal = ((product.cantidad * product.precio_unitario) - product.impuestos) - product.valor_descuento;
+    product.valor_descuento = (((product.cantidad * product.precio_unitario)) * product.descuento) / 100;
+    product.subtotal = ((product.cantidad * product.precio_unitario)) - product.valor_descuento;
     product.precio_total = product.subtotal + product.impuestos;
 
     await calcularTotales();
@@ -519,7 +519,6 @@ const save = async () => {
                             </select>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="grid grid-cols-1 mt-6 sm:grid-cols-1 lg:grid-cols-2">

@@ -51,8 +51,8 @@ const selectProvider = (provider) => {
 
 /* LISTAR PRODUCTOS */
 const searchProducts = async () => {
-    const response = await axios.get(`/products?search=${searchProduct.value}`);
-    productsFiltrados.value = response.data.data;
+    const response = await axios.get(`/searchProduct?search=${searchProduct.value}`);
+    productsFiltrados.value = response.data;
 }
 
 const addProduct = async (product) => {
@@ -125,8 +125,8 @@ const calcularPrecioTotal = async (product) => {
     } else {
         product.impuestos = (product.precio_total * 0) / 100;
     }
-    product.valor_descuento = (((product.cantidad * product.precio_unitario) - product.impuestos) * product.descuento) / 100;
-    product.subtotal = ((product.cantidad * product.precio_unitario) - product.impuestos) - product.valor_descuento;
+    product.valor_descuento = (((product.cantidad * product.precio_unitario)) * product.descuento) / 100;
+    product.subtotal = ((product.cantidad * product.precio_unitario)) - product.valor_descuento;
     product.precio_total = product.subtotal + product.impuestos;
 
     await calcularTotales();

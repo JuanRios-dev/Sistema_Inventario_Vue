@@ -16,6 +16,18 @@ const getInvoice = () => {
         response => (form.value = response.data.invoice)
     )
 }
+
+const isTotalValid = () => {
+    if (!form.value.product_invoice) return false;
+
+    // Calculamos el total sumando `precio_total` de cada producto
+    const calculatedTotal = form.value.product_invoice.reduce((total, product) => {
+        return total + (parseFloat(product.pivot.precio_total) || 0);
+    }, 0);
+
+    // Comparamos el total calculado con el total en `form.value`
+    return calculatedTotal === parseFloat(form.value.total || 0);
+};
 </script>
 
 <template>
@@ -162,6 +174,13 @@ const getInvoice = () => {
                                 </tr>
                             </thead>
 
+                            <template v-if="!isTotalValid()">
+                                <tr>
+                                    <td colspan="8" class="px-1 py-1 text-center text-red-500">
+                                        Borraste un producto, pendejo. Pero el saldo de la compra seguira existiendo
+                                    </td>
+                                </tr>
+                            </template>
                             <tbody class="bg-white">
                                 <tr v-for="(product, index) in form.product_invoice" :key="index">
                                     <td class="px-1 py-1 border-b border-gray-200">
