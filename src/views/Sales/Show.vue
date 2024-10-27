@@ -9,13 +9,16 @@ onMounted(() => { getSale() });
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + authStore.authToken;
 
 const form = ref({});
+const hasRefunds = ref(false);
 
 const id = ref(route.params.id);
 const getSale = () => {
-    axios.get('/sales/' + id.value).then(
-        response => (form.value = response.data.sale)
-    )
-}
+    axios.get('/sales/' + id.value).then(response => {
+        form.value = response.data.sale;
+        hasRefunds.value = response.data.hasRefunds;
+    });
+};
+
 
 const isTotalValid = () => {
     if (!form.value.product_sale) return false;
@@ -75,6 +78,13 @@ const openPDF = () => {
                 Imprimir
             </button>
         </div>
+    </div>
+
+    <div v-if="hasRefunds" class="text-red-600 mt-2">
+        Esta venta tiene devoluciones asociadas.
+    </div>
+    <div v-else class="text-green-600 mt-2">
+        Esta venta no tiene devoluciones asociadas.
     </div>
 
     <div class="mt-6">

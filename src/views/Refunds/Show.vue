@@ -9,34 +9,40 @@ onMounted(() => { getRefund() });
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + authStore.authToken;
 
 const form = ref({});
+const formProducts = ref({});
 const formSale = ref({});
 const formCustomer = ref({});
+let isValid = Boolean;
 
 const id = ref(route.params.id);
 const getRefund = () => {
     axios.get('/refunds/' + id.value).then(response => {
-        form.value = response.data.refund;
+        form.value = response.data.refund.amount;
+        formProducts.value = response.data.refund;
         formSale.value = response.data.relatedData;
-        formCustomer.value = response.data.relatedData.customer;
+        if (response.data.relatedData.customer) {
+            formCustomer.value = response.data.relatedData.customer;
+        } else if (response.data.relatedData.provider) {
+            formCustomer.value = response.data.relatedData.provider;
+        }
     });
 };
-
 const isTotalValid = () => {
-    if (!formSale.value.products) return false;
+    if (!formProducts.value.product_refund) return false;
 
     // Calculamos el total sumando `precio_total` de cada producto
-    const calculatedTotal = formSale.value.products.reduce((total, product) => {
-        return total + (parseFloat(product.pivot.precio_total) || 0);
+    const calculatedTotal = formProducts.value.product_refund.reduce((total, product) => {
+        return total + (parseFloat(product.precio_total) || 0);
     }, 0);
 
-    // Comparamos el total calculado con el total en `form.value`
     return calculatedTotal === parseFloat(formSale.value.total || 0);
 };
+
 </script>
 
 <template>
     <div class="flex justify-between items-center">
-        <h3 class="sm:text-2xl text-lg font-semibold text-gray-700">Devolucion Nº {{  form.id }}</h3>
+        <h3 class="sm:text-2xl text-lg font-semibold text-gray-700">Devolucion Nº {{ form.id }}</h3>
     </div>
 
     <div class="mt-4">
@@ -125,7 +131,7 @@ const isTotalValid = () => {
                             <thead>
                                 <tr>
                                     <th
-                                        class="px-1 py-2 font-bold leading-4 tracking-wider text-left text-white uppercase bg-gray-900 border-b border-gray-200">
+                                        class="px-1 py-2 w-36 font-bold leading-4 tracking-wider text-left text-white uppercase bg-gray-900 border-b border-gray-200">
                                         Productos
                                     </th>
                                     <th
@@ -133,16 +139,8 @@ const isTotalValid = () => {
                                         Cantidad
                                     </th>
                                     <th
-                                        class="px-1 py-2 w-20 font-bold leading-4 tracking-wider text-center text-white uppercase bg-gray-900 border-b border-gray-200">
-                                        Devolver
-                                    </th>
-                                    <th
                                         class="px-1 py-2 w-28 font-bold leading-4 tracking-wider text-center text-white uppercase bg-gray-900 border-b border-gray-200">
                                         Precio Unitario
-                                    </th>
-                                    <th
-                                        class="px-1 py-2 w-28 font-bold leading-4 tracking-wider text-center text-white uppercase bg-gray-900 border-b border-gray-200">
-                                        Valor a Devolver
                                     </th>
                                     <th
                                         class="px-1 py-2 w-28 font-bold leading-4 tracking-wider text-center text-white uppercase bg-gray-900 border-b border-gray-200">
@@ -171,7 +169,7 @@ const isTotalValid = () => {
                                 </tr>
                             </template>
                             <tbody class="bg-white">
-                                <tr v-for="(product, index) in formSale.products" :key="index">
+                                <tr v-for="(product, index) in formProducts.product_refund" :key="index">
                                     <td class="px-1 py-1 border-b border-gray-200">
                                         <div class="font-medium text-gray-900">
                                             # {{ product.codigo }}
@@ -183,20 +181,14 @@ const isTotalValid = () => {
                                     <td class="px-1 py-1 border-b border-gray-200 text-center">
                                         <input type="text"
                                             class="bg-white w-full h-0 py-3 rounded pl-2 text-base font-regular outline-0"
-                                            style="font-size: 0.7rem" id="cantidad" v-model="product.pivot.cantidad"
+                                            style="font-size: 0.7rem" id="cantidad" v-model="product.cantidad"
                                             autocomplete="off" disabled>
-                                    </td>
-                                    <td class="px-1 py-1 border-b border-gray-200 text-center">
-                                        <input type="text"
-                                            class="bg-white w-full h-0 py-3 rounded pl-2 text-base font-regular outline-0"
-                                            style="font-size: 0.7rem" id="cantida_devolver" v-model="cantidad[index]"
-                                            :class="{ 'border-red-500 border-2': formErrors['products.' + index + '.cantidad'] }" autocomplete="off">
                                     </td>
                                     <td class="px-1 py-1 border-b border-gray-200 text-center">
                                         <vue-number type="text"
                                             class="bg-white w-full h-0 py-3 rounded pl-2 text-base font-regular outline-0"
                                             style="font-size: 0.7rem" id="precio_unitario"
-                                            v-model="product.pivot.precio_unitario" autocomplete="off"
+                                            v-model="product.precio_unitario" autocomplete="off"
                                             v-bind="{ prefix: '$ ', decimal: '.', separator: ',', minimumFractionDigits: 2 }"
                                             disabled></vue-number>
                                     </td>
@@ -205,8 +197,7 @@ const isTotalValid = () => {
                                         <vue-number type="text"
                                             class="bg-gray-300 w-full h-0 py-3 rounded pl-2 text-base font-regular outline-0"
                                             style="font-size: 0.7rem" id="descuento"
-                                            :class="{ 'border-red-500 border-2': formErrors['products.' + index + '.precio_total'] }"
-                                            v-model="form.products[index].precio_total" autocomplete="off"
+                                            v-model="product.valor_descuento" autocomplete="off"
                                             v-bind="{ prefix: '$ ', decimal: '.', separator: ',', minimumFractionDigits: 2 }"
                                             disabled></vue-number>
                                     </td>
@@ -215,44 +206,24 @@ const isTotalValid = () => {
                                         <vue-number type="text"
                                             class=" bg-white w-full h-0 py-3 rounded pl-2 text-base font-regular outline-0"
                                             style="font-size: 0.7rem" id="valor_descuento"
-                                            v-model="product.pivot.valor_descuento" autocomplete="off"
+                                            v-model="product.impuestos" autocomplete="off"
                                             v-bind="{ prefix: '$ ', decimal: '.', separator: ',', minimumFractionDigits: 2 }"
                                             disabled></vue-number>
                                     </td>
-
                                     <td class="px-1 py-1 border-b border-gray-200 text-center ">
                                         <vue-number type="text"
                                             class=" bg-white rounded w-full h-0 py-3 pl-2 text-base font-regular outline-0"
-                                            style="font-size: 0.7rem" id="impuestos" v-model="product.pivot.impuestos"
+                                            style="font-size: 0.7rem" id="subtotal" v-model="product.subtotal"
                                             autocomplete="off"
                                             v-bind="{ prefix: '$ ', decimal: '.', separator: ',', minimumFractionDigits: 2 }"
                                             disabled>
                                         </vue-number>
                                     </td>
                                     <td class="px-1 py-1 border-b border-gray-200 text-center ">
-                                        <vue-number type="text"
-                                            class=" bg-white rounded w-full h-0 py-3 pl-2 text-base font-regular outline-0"
-                                            style="font-size: 0.7rem" id="subtotal" v-model="product.pivot.subtotal"
-                                            autocomplete="off"
-                                            v-bind="{ prefix: '$ ', decimal: '.', separator: ',', minimumFractionDigits: 2 }"
-                                            disabled>
-                                        </vue-number>
-                                    </td>
-                                    <td v-if="data[index] !== undefined"
-                                        class="px-1 py-1 border-b border-gray-200 text-center ">
-                                        <vue-number type="text"
-                                            class=" bg-white rounded w-full h-0 py-3 pl-2 text-base font-regular outline-0"
-                                            style="font-size: 0.7rem" id="precio_total" v-model="data[index]"
-                                            autocomplete="off"
-                                            v-bind="{ prefix: '$ ', decimal: '.', separator: ',', minimumFractionDigits: 2 }"
-                                            disabled>
-                                        </vue-number>
-                                    </td>
-                                    <td v-else class="px-1 py-1 border-b border-gray-200 text-center ">
                                         <vue-number type="text"
                                             class=" bg-white rounded w-full h-0 py-3 pl-2 text-base font-regular outline-0"
                                             style="font-size: 0.7rem" id="precio_total"
-                                            v-model="product.pivot.precio_total" autocomplete="off"
+                                            v-model="product.precio_total" autocomplete="off"
                                             v-bind="{ prefix: '$ ', decimal: '.', separator: ',', minimumFractionDigits: 2 }"
                                             disabled>
                                         </vue-number>
@@ -262,7 +233,7 @@ const isTotalValid = () => {
 
                             <tfoot>
                                 <tr>
-                                    <td colspan="4" class="text-right font-semibold px-6 py-2 bg-white">Totales:</td>
+                                    <td colspan="2" class="text-right font-semibold px-6 py-2 bg-white">Totales:</td>
                                     <td class="px-1 py-1 border-b border-gray-200 text-center ">
                                         <vue-number type="text"
                                             class=" bg-white w-full h-0 py-3 rounded pl-2 text-base font-regular outline-0"
