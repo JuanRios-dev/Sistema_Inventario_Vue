@@ -2,6 +2,8 @@
 
 Bienvenido al **Sistema de Inventario**, una solución moderna y eficiente construida con Vue.js que te permite gestionar tus productos de manera intuitiva y en tiempo real. Este sistema se conecta a una robusta API RESTful desarrollada en Laravel, asegurando que tengas un control total sobre tu inventario.
 
+![Descripción del Proyecto](public/capt.png)
+
 ## Características
 
 - **Gestión de Productos**: Agrega, edita y elimina productos fácilmente.
