@@ -20,8 +20,8 @@ Bienvenido al **Sistema de Inventario**, una solución moderna y eficiente const
 Sigue estos pasos para configurar el proyecto en tu entorno local:
 
 1. **Clona el repositorio**:
-   git clone https://github.com/tu_usuario/sistema-inventario.git
-   cd sistema-inventario
+   git clone https://github.com/JuanRios-dev/TechXamp.Vue.git
+   cd TechXamp.Vue
 
 2. **Instala dependencias**:
     npm install
